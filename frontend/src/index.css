@@ -1,0 +1,17 @@
+.card {
+  padding: 24px;
+  box-shadow: 0 20px 80px rgb(214, 133, 11);
+  max-width: 250;
+  flex: 1 1 250px; 
+  height: 300px;
+}
+
+.box{
+  width: 300px;
+  padding: 20px;
+  margin: 50px auto;
+  background-color: rgb(225, 252, 244);
+  box-shadow: 0 4px 12px black;
+  border-radius: 10px;
+  text-align: center;
+}
