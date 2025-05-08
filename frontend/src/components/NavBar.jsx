@@ -1,81 +1,178 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, IconButton, InputBase, Paper } from '@mui/material';
-import { Home, ShoppingCart, Search } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { Home, ShoppingCart, AccountCircle } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import "@fontsource/playfair-display";
+import "@fontsource/montserrat";
 
 const NavBar = ({ user, onLogout }) => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = React.useState('');
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    console.log('Searching for:', searchQuery);
-    // Implement your search logic here
-  };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#ff80ab', background: 'linear-gradient(135deg, #ff80ab 0%, #ff4081 100%)' }}>
-      <Toolbar sx={{ justifyContent: 'space-between', gap: 1 }}>
-        {/* Left side - Logo */}
-        <Typography variant="h6" component="a" href="/slider" sx={{ textDecoration: 'none', color: 'white', fontWeight: 'bold', minWidth: '150px', '&:hover': { textShadow: '0 0 8px rgba(255,255,255,0.5)' } }}>
+    <AppBar
+      position="static"
+      style={{
+        background: "linear-gradient(145deg, #2c3e50, #4a6491)",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+        backdropFilter: "blur(8px)",
+        zIndex: 10,
+        width: "100%",
+        top: 0,
+      }}
+    >
+      <Toolbar
+        style={{
+          justifyContent: "space-between",
+          gap: "1rem",
+          padding: "0 2rem",
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="a"
+          href="/slider"
+          style={{
+            textDecoration: "none",
+            color: "#f5f5f5",
+            fontWeight: "700",
+            fontFamily: '"Playfair Display", serif',
+            letterSpacing: "1.5px",
+            minWidth: "180px",
+            transition: "all 0.3s ease",
+            textShadow: "1px 1px 3px rgba(0,0,0,0.3)",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.textShadow = "0 0 12px rgba(255, 215, 0, 0.7)";
+            e.target.style.color = "#ffd700";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.textShadow = "1px 1px 3px rgba(0,0,0,0.3)";
+            e.target.style.color = "#f5f5f5";
+          }}
+        >
           My BookStore
         </Typography>
 
-        {/* Search Box */}
-        <Paper
-          component="form"
-          onSubmit={handleSearchSubmit}
-          sx={{
-            p: '2px 4px',
-            display: 'flex',
-            alignItems: 'center',
-            width: '200px',
-            backgroundColor: 'white',
-            borderRadius: '20px',
-            transition: 'width 0.3s',
-            '&:hover': {
-              width: '250px',
-              boxShadow: '0 0 0 2px rgba(255,64,129,0.3)',
-            },
+        <Box
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
           }}
         >
-          <InputBase
-            sx={{ ml: 1, flex: 1, fontSize: '0.9rem' }}
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <IconButton
-            type="submit"
-            size="small"
-            sx={{ p: '5px', color: '#ff4081' }}
+          <Button
+            color="inherit"
+            onClick={() => navigate("/slider")}
+            startIcon={<Home />}
+            sx={{
+              fontFamily: '"Montserrat", sans-serif',
+              fontWeight: 500,
+              letterSpacing: "0.5px",
+              "&:hover": {
+                backgroundColor: "rgba(255, 215, 0, 0.2)",
+              },
+            }}
           >
-            <Search fontSize="small" />
-          </IconButton>
-        </Paper>
-
-        {/* Right side - Navigation buttons */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          {/* Always visible: Home, Contact Us, About Us */}
-          <Button color="inherit" onClick={() => navigate('/slider')}>
-            <Home />
+            Home
           </Button>
-          <Button color="inherit" onClick={() => navigate('/contactus')}>Contact Us</Button>
-          <Button color="inherit" onClick={() => navigate('/aboutus')}>About Us</Button>
 
-          {/* Only when logged in: Cart + Logout */}
+          <Button
+            color="inherit"
+            onClick={() => navigate("/contactus")}
+            sx={{
+              fontFamily: '"Montserrat", sans-serif',
+              fontWeight: 500,
+              letterSpacing: "0.5px",
+              "&:hover": {
+                backgroundColor: "rgba(255, 215, 0, 0.2)",
+              },
+            }}
+          >
+            Contact Us
+          </Button>
+
+          <Button
+            color="inherit"
+            onClick={() => navigate("/aboutus")}
+            sx={{
+              fontFamily: '"Montserrat", sans-serif',
+              fontWeight: 500,
+              letterSpacing: "0.5px",
+              "&:hover": {
+                backgroundColor: "rgba(255, 215, 0, 0.2)",
+              },
+            }}
+          >
+            About Us
+          </Button>
+
           {user && (
             <>
-              <Button color="inherit" onClick={() => navigate('/cart')}>
-                <ShoppingCart />
+              <Button
+                color="inherit"
+                onClick={() => navigate("/cart")}
+                startIcon={<ShoppingCart />}
+                sx={{
+                  fontFamily: '"Montserrat", sans-serif',
+                  fontWeight: 500,
+                  letterSpacing: "0.5px",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 215, 0, 0.2)",
+                  },
+                }}
+              >
+                Cart
               </Button>
-              <Button color="inherit" onClick={onLogout}>Logout</Button>
+              <Button
+                color="inherit"
+                onClick={() => navigate("/orders")}
+                sx={{
+                  fontFamily: '"Montserrat", sans-serif',
+                  fontWeight: 500,
+                  letterSpacing: "0.5px",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 215, 0, 0.2)",
+                  },
+                }}
+              >
+                Orders
+              </Button>
+
+              <Button
+                color="inherit"
+                onClick={onLogout}
+                startIcon={<AccountCircle />}
+                sx={{
+                  fontFamily: '"Montserrat", sans-serif',
+                  fontWeight: 500,
+                  letterSpacing: "0.5px",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 215, 0, 0.2)",
+                  },
+                }}
+              >
+                Logout
+              </Button>
             </>
           )}
 
-          {/* Only when logged out: Login */}
           {!user && (
-            <Button color="inherit" onClick={() => navigate('/login')}>Login</Button>
+            <Button
+              color="inherit"
+              onClick={() => navigate("/login")}
+              startIcon={<AccountCircle />}
+              sx={{
+                fontFamily: '"Montserrat", sans-serif',
+                fontWeight: 500,
+                letterSpacing: "0.5px",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 215, 0, 0.2)",
+                },
+              }}
+            >
+              Login
+            </Button>
           )}
         </Box>
       </Toolbar>

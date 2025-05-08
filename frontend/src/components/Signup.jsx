@@ -1,139 +1,166 @@
+import React, { useState } from "react";
 import {
-  Button, TextField, IconButton,
-  InputAdornment, Box, Typography, Link
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+  Box,
+  Button,
+  TextField,
+  IconButton,
+  InputAdornment,
+  Typography,
+  Link,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState(''); // 🔹 New username state
-  const [password, setPassword] = useState('');
-  const [rePassword, setRePassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
 
   const handleRegister = async () => {
     if (!email || !username || !password || !rePassword) {
-      alert('Please fill all fields.');
+      alert("Please fill all fields.");
       return;
     }
-
     if (password !== rePassword) {
-      alert('Passwords do not match.');
+      alert("Passwords do not match.");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:3000/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+      const response = await fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
-          username, // 🔹 Include username in request
+          username,
           password,
-          confirmPassword: rePassword
-        })
+          confirmPassword: rePassword,
+        }),
       });
 
       const data = await response.json();
-
       if (response.ok) {
         alert(data.message);
-        navigate('/login');
+        navigate("/login");
       } else {
         alert(data.message);
       }
     } catch (error) {
-      console.error('Detailed error:', error);
       alert(error.message);
     }
   };
 
-  const handleLoginClick = (e) => {
-    e.preventDefault();
-    navigate('/login');
-  };
-
   return (
-    <div>
-      <div className="box">
-        <h2><u>Signup</u></h2>
-
-        <TextField 
-          label="Email"
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        /><br />
+    <Box
+      sx={{
+        minHeight: "100vh",
+        background: "linear-gradient(to right, #ffdde1, #ee9ca7)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 2,
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 420,
+          backgroundColor: "#ffffff",
+          borderRadius: 4,
+          boxShadow: 6,
+          p: 4,
+        }}
+      >
+        <Typography variant="h4" align="center" fontWeight="bold" mb={3}>
+          Create Account
+        </Typography>
 
         <TextField
-          label="Username" // 🔹 New username input
-          variant="outlined"
-          margin="normal"
+          label="Email"
+          type="email"
           fullWidth
+          margin="normal"
+          variant="outlined"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <TextField
+          label="Username"
+          fullWidth
+          margin="normal"
+          variant="outlined"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-        /><br />
+        />
 
-        <Box>
-          <TextField
-            label="Password"
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            margin="normal"
-            sx={{ width: '300px' }}
-            InputProps={{
-              endAdornment: password && (
-                <InputAdornment position="end">
-                  <IconButton onClick={() => setShowPassword((show) => !show)} edge="end">
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+        <TextField
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          fullWidth
+          margin="normal"
+          variant="outlined"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
 
-          <TextField
-            label="Re-enter Password"
-            type={showRePassword ? 'text' : 'password'}
-            value={rePassword}
-            onChange={(e) => setRePassword(e.target.value)}
-            margin="normal"
-            sx={{ width: '300px' }}
-            InputProps={{
-              endAdornment: rePassword && (
-                <InputAdornment position="end">
-                  <IconButton onClick={() => setShowRePassword((show) => !show)} edge="end">
-                    {showRePassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
+        <TextField
+          label="Confirm Password"
+          type={showRePassword ? "text" : "password"}
+          fullWidth
+          margin="normal"
+          variant="outlined"
+          value={rePassword}
+          onChange={(e) => setRePassword(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setShowRePassword(!showRePassword)}>
+                  {showRePassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
 
-        <br /><br />
-        <Button variant="contained" color="warning" onClick={handleRegister}>
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 3, py: 1.5, fontSize: "1rem", fontWeight: "bold" }}
+          onClick={handleRegister}
+        >
           Sign Up
-        </Button><br /><br />
+        </Button>
 
-        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-          Already have an account?{' '}
-          <Link href="/login" underline="hover" onClick={handleLoginClick}>
+        <Typography variant="body2" align="center" mt={3}>
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            underline="hover"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/login");
+            }}
+          >
             Login
           </Link>
         </Typography>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

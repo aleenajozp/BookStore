@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const Admin = () => {
   const [view, setView] = useState('none');
   const [users, setUsers] = useState([]);
   const [books, setBooks] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [editingBook, setEditingBook] = useState(null);
   const [bookData, setBookData] = useState({
     name: '',
     author: '',
     price: '',
-    image: '',
-    imageFile: null, // for image file upload
+    imageFile: null,
   });
 
   const fetchUsers = async () => {
@@ -27,6 +27,13 @@ const Admin = () => {
     setView('books');
   };
 
+  const fetchOrders = async () => {
+    const res = await fetch('http://localhost:3000/orders');
+    const data = await res.json();
+    setOrders(data);
+    setView('orders');
+  };
+
   const handleBookInputChange = (e) => {
     const { name, value } = e.target;
     setBookData((prev) => ({
@@ -38,25 +45,17 @@ const Admin = () => {
   const handleImageChange = (e) => {
     setBookData((prev) => ({
       ...prev,
-      imageFile: e.target.files[0], // store the file object
+      imageFile: e.target.files[0],
     }));
   };
 
   const handleBookSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append('name', bookData.name);
     formData.append('author', bookData.author);
     formData.append('price', bookData.price);
-    
-    // If image is uploaded as a file, append the file
-    if (bookData.imageFile) {
-      formData.append('image', bookData.imageFile);
-    } else {
-      // If using image URL, append the URL directly
-      formData.append('image', bookData.image);
-    }
+    formData.append('image', bookData.imageFile);
 
     const url = editingBook
       ? `http://localhost:3000/update-book/${editingBook._id}`
@@ -71,7 +70,7 @@ const Admin = () => {
 
     const result = await res.json();
     alert(result.message || 'Success');
-    setBookData({ name: '', author: '', price: '', image: '', imageFile: null });
+    setBookData({ name: '', author: '', price: '', imageFile: null });
     setEditingBook(null);
     fetchBooks();
   };
@@ -92,8 +91,7 @@ const Admin = () => {
       name: book.name,
       author: book.author,
       price: book.price,
-      image: book.image || '',
-      imageFile: null, // reset file on edit
+      imageFile: null,
     });
     setView('addBook');
   };
@@ -102,125 +100,49 @@ const Admin = () => {
     window.location.href = '/';
   };
 
-  const styles = {
-    container: {
-      background: 'linear-gradient(to right, #1f4037, #99f2c8)',
-      minHeight: '100vh',
-      color: '#fff',
-      padding: '30px',
-      fontFamily: 'Arial, sans-serif',
-    },
-    header: {
-      textAlign: 'center',
-      fontSize: '36px',
-      marginBottom: '30px',
-      color: '#ffe600',
-    },
-    buttonGroup: {
-      textAlign: 'center',
-      marginBottom: '30px',
-    },
-    button: {
-      margin: '0 10px',
-      padding: '10px 20px',
-      border: 'none',
-      borderRadius: '5px',
-      backgroundColor: '#ff6f61',
-      color: '#fff',
-      fontWeight: 'bold',
-      cursor: 'pointer',
-      transition: '0.3s',
-    },
-    logoutButton: {
-      backgroundColor: '#f44336',
-    },
-    buttonHover: {
-      backgroundColor: '#ff3b2f',
-    },
-    table: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      backgroundColor: '#222',
-      color: 'white',
-      marginTop: '20px',
-    },
-    th: {
-      backgroundColor: '#444',
-      padding: '10px',
-    },
-    td: {
-      padding: '10px',
-      borderBottom: '1px solid #666',
-    },
-    form: {
-      backgroundColor: '#333',
-      padding: '20px',
-      borderRadius: '10px',
-      maxWidth: '500px',
-      margin: 'auto',
-    },
-    input: {
-      padding: '10px',
-      width: '100%',
-      marginBottom: '10px',
-      borderRadius: '5px',
-      border: 'none',
-    },
-    submitButton: {
-      backgroundColor: '#28a745',
-      color: 'white',
-      padding: '10px 20px',
-      border: 'none',
-      borderRadius: '5px',
-      cursor: 'pointer',
-    },
-    bookCard: {
-      backgroundColor: '#111',
-      color: 'white',
-      borderRadius: '10px',
-      padding: '15px',
-      margin: '10px',
-      width: '220px',
-    },
-    bookContainer: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-    },
-    image: {
-      width: '100%',
-      borderRadius: '5px',
-      marginBottom: '10px',
-    },
-  };
-
   return (
-    <div style={styles.container}>
-      <h1 style={styles.header}>📚 Admin Dashboard</h1>
-      <div style={styles.buttonGroup}>
-        <button style={styles.button} onClick={fetchUsers}>Show Users</button>
-        <button style={styles.button} onClick={() => { setEditingBook(null); setView('addBook'); }}>Add Book</button>
-        <button style={styles.button} onClick={fetchBooks}>View Books</button>
-        <button style={{ ...styles.button, ...styles.logoutButton }} onClick={handleLogout}>Logout</button>
+    <div
+      style={{
+        minHeight: '100vh',
+        padding: '30px',
+        background: 'linear-gradient(to right, #1f4037, #99f2c8)',
+        fontFamily: 'Arial, sans-serif',
+        color: '#fff',
+      }}
+    >
+      <h1 style={{ textAlign: 'center', fontSize: '36px', color: '#ffe600' }}>
+        📚 Admin Dashboard
+      </h1>
+
+      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+        <button style={buttonStyle()} onClick={fetchUsers}>Show Users</button>
+        <button style={buttonStyle()} onClick={() => {
+          setEditingBook(null);
+          setBookData({ name: '', author: '', price: '', imageFile: null });
+          setView('addBook');
+        }}>Add Book</button>
+        <button style={buttonStyle()} onClick={fetchBooks}>View Books</button>
+        <button style={buttonStyle()} onClick={fetchOrders}>View Orders</button>
+        <button style={buttonStyle('#f44336')} onClick={handleLogout}>Logout</button>
       </div>
 
       {view === 'users' && (
         <div>
           <h2 style={{ textAlign: 'center', color: '#ffe600' }}>Signed-in Users</h2>
-          <table style={styles.table}>
+          <table style={tableStyle()}>
             <thead>
               <tr>
-                <th style={styles.th}>Username</th>
-                <th style={styles.th}>Email</th>
-                <th style={styles.th}>Password</th>
+                <th style={thStyle()}>Username</th>
+                <th style={thStyle()}>Email</th>
+                
               </tr>
             </thead>
             <tbody>
               {users.map((user, i) => (
                 <tr key={i}>
-                  <td style={styles.td}>{user.username}</td>
-                  <td style={styles.td}>{user.email}</td>
-                  <td style={styles.td}>{user.password}</td>
+                  <td style={tdStyle()}>{user.username}</td>
+                  <td style={tdStyle()}>{user.email}</td>
+                  
                 </tr>
               ))}
             </tbody>
@@ -229,21 +151,28 @@ const Admin = () => {
       )}
 
       {view === 'addBook' && (
-        <form onSubmit={handleBookSubmit} style={styles.form}>
+        <form onSubmit={handleBookSubmit} style={{
+          backgroundColor: '#333',
+          padding: '20px',
+          borderRadius: '10px',
+          maxWidth: '500px',
+          margin: 'auto',
+        }}>
           <h2 style={{ textAlign: 'center', color: '#ffe600' }}>
             {editingBook ? 'Edit Book' : 'Add New Book'}
           </h2>
-          <input type="text" name="name" placeholder="Book Name" value={bookData.name} onChange={handleBookInputChange} required style={styles.input} />
-          <input type="text" name="author" placeholder="Author Name" value={bookData.author} onChange={handleBookInputChange} required style={styles.input} />
-          <input type="number" name="price" placeholder="Price" value={bookData.price} onChange={handleBookInputChange} required style={styles.input} />
-          
-          {/* Image URL input */}
-          <input type="text" name="image" placeholder="Image URL" value={bookData.image} onChange={handleBookInputChange} style={styles.input} />
-          
-          {/* Image Upload input */}
-          <input type="file" onChange={handleImageChange} style={styles.input} />
-          
-          <button type="submit" style={styles.submitButton}>
+          <input type="text" name="name" placeholder="Book Name" value={bookData.name} onChange={handleBookInputChange} required style={inputStyle()} />
+          <input type="text" name="author" placeholder="Author Name" value={bookData.author} onChange={handleBookInputChange} required style={inputStyle()} />
+          <input type="number" name="price" placeholder="Price" value={bookData.price} onChange={handleBookInputChange} required style={inputStyle()} />
+          <input type="file" accept="image/*" onChange={handleImageChange} required style={inputStyle()} />
+          <button type="submit" style={{
+            backgroundColor: '#28a745',
+            color: 'white',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}>
             {editingBook ? 'Update Book' : 'Add Book'}
           </button>
         </form>
@@ -252,17 +181,32 @@ const Admin = () => {
       {view === 'books' && (
         <div>
           <h2 style={{ textAlign: 'center', color: '#ffe600' }}>All Books</h2>
-          <div style={styles.bookContainer}>
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}>
             {books.map((book, i) => (
-              <div key={i} style={styles.bookCard}>
-                <img src={book.image} alt={book.name} style={styles.image} />
+              <div key={i} style={{
+                backgroundColor: '#111',
+                color: 'white',
+                borderRadius: '10px',
+                padding: '15px',
+                margin: '10px',
+                width: '220px',
+              }}>
+                <img src={book.image} alt={book.name} style={{
+                  width: '100%',
+                  borderRadius: '5px',
+                  marginBottom: '10px',
+                }} />
                 <h4>{book.name}</h4>
                 <p><strong>Author:</strong> {book.author}</p>
                 <p><strong>Price:</strong> ₹{book.price}</p>
-                <button onClick={() => handleEditBook(book)} style={{ ...styles.button, marginRight: '5px' }}>
+                <button onClick={() => handleEditBook(book)} style={{ ...buttonStyle(), marginRight: '5px' }}>
                   Edit
                 </button>
-                <button onClick={() => handleDeleteBook(book._id)} style={{ ...styles.button, backgroundColor: '#dc3545' }}>
+                <button onClick={() => handleDeleteBook(book._id)} style={{ ...buttonStyle('#dc3545') }}>
                   Delete
                 </button>
               </div>
@@ -270,8 +214,79 @@ const Admin = () => {
           </div>
         </div>
       )}
+
+      {view === 'orders' && (
+        <div>
+          <h2 style={{ textAlign: 'center', color: '#ffe600' }}>User Orders</h2>
+          <table style={tableStyle()}>
+            <thead>
+              <tr>
+                <th style={thStyle()}>Username</th>
+                <th style={thStyle()}>Email</th>
+                <th style={thStyle()}>Books</th>
+                <th style={thStyle()}>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((order, i) => (
+                <tr key={i}>
+                  <td style={tdStyle()}>{order.username}</td>
+                  <td style={tdStyle()}>{order.userEmail}</td>
+                  <td style={tdStyle()}>
+                    <ul>
+                      {order.books.map((b, j) => (
+                        <li key={j}>{b.name} x {b.quantity}</li>
+                      ))}
+                    </ul>
+                  </td>
+                  <td style={tdStyle()}>{new Date(order.orderTime).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
+
+// Inline style helpers
+const buttonStyle = (bg = '#ff6f61') => ({
+  margin: '0 10px 10px 10px',
+  padding: '10px 20px',
+  border: 'none',
+  borderRadius: '5px',
+  backgroundColor: bg,
+  color: '#fff',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  transition: '0.3s',
+});
+
+const tableStyle = () => ({
+  width: '100%',
+  borderCollapse: 'collapse',
+  backgroundColor: '#222',
+  color: 'white',
+  marginTop: '20px',
+});
+
+const thStyle = () => ({
+  backgroundColor: '#444',
+  padding: '10px',
+});
+
+const tdStyle = () => ({
+  padding: '10px',
+  borderBottom: '1px solid #666',
+});
+
+const inputStyle = () => ({
+  padding: '10px',
+  width: '100%',
+  marginBottom: '10px',
+  borderRadius: '5px',
+  border: 'none',
+});
 
 export default Admin;
