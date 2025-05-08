@@ -27,7 +27,7 @@ app.post('/contact', async (req, res) => {
             service: 'gmail', 
             auth: {
                 user: 'aleena.jozph@gmail.com', 
-                pass: '', //gave a password connecting using google
+                pass: 'ktiz fsei sboc jnjv', //gave a password connecting using google
             },
         });
         
