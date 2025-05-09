@@ -135,7 +135,7 @@ app.post('/books', upload.single('image'), async (req, res) => {
   }
 
   try {
-    const image = `/uploads/${req.file.filename}`;
+    const image = `http://localhost:3000/uploads/${req.file.filename}`;
     const newBook = new Book({
       name,
       author,
@@ -186,7 +186,7 @@ app.put('/books/:id', upload.single('image'), async (req, res) => {
     };
 
     if (req.file) {
-      updates.image = `/uploads/${req.file.filename}`;
+      updates.image = `http://localhost:3000/uploads/${req.file.filename}`;
     }
 
     const updatedBook = await Book.findByIdAndUpdate(req.params.id, updates, { new: true });

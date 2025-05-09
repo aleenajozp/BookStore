@@ -58,8 +58,8 @@ const Admin = () => {
     formData.append('image', bookData.imageFile);
 
     const url = editingBook
-      ? `http://localhost:3000/update-book/${editingBook._id}`
-      : 'http://localhost:3000/add-book';
+      ? `http://localhost:3000/books/${editingBook._id}`
+      : 'http://localhost:3000/books';
 
     const method = editingBook ? 'PUT' : 'POST';
 
@@ -77,7 +77,7 @@ const Admin = () => {
 
   const handleDeleteBook = async (bookId) => {
     if (!window.confirm('Are you sure you want to delete this book?')) return;
-    const res = await fetch(`http://localhost:3000/delete-book/${bookId}`, {
+    const res = await fetch(`http://localhost:3000/books/${bookId}`, {
       method: 'DELETE',
     });
     const result = await res.json();
