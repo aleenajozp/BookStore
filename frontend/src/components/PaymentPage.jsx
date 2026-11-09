@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { API_BASE } from "../config";
 
 const PaymentPage = () => {
   const { state } = useLocation();
@@ -66,7 +67,7 @@ const PaymentPage = () => {
         await new Promise((resolve) => setTimeout(resolve, 1500));
       }
 
-      const response = await fetch("http://localhost:3000/orders", {
+      const response = await fetch(`${API_BASE}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

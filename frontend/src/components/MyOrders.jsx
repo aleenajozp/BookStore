@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../config";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -16,7 +17,7 @@ const MyOrders = () => {
             ? { userEmail: user.email }
             : {};
         const res = await axios.get(
-          `http://localhost:3000/orders/${user?.email}`
+          `${API_BASE}/orders/${user?.email}`
         );
         setOrders(res.data);
       } catch (err) {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE, getImageUrl } from "../config";
 
 const Home = () => {
   const [books, setBooks] = useState([]);
@@ -14,7 +15,7 @@ const Home = () => {
     const fetchBooks = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("http://localhost:3000/books");
+        const response = await fetch(`${API_BASE}/books`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch books");
@@ -226,7 +227,7 @@ const Home = () => {
                 }}
               >
                 <img
-                  src={book.image}
+                  src={getImageUrl(book.image)}
                   alt={book.name}
                   style={{
                     maxHeight: "100%",

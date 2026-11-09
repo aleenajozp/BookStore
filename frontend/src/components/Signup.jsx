@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_BASE } from "../config";
 import {
   Box,
   Button,
@@ -31,7 +32,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/signup", {
+      const response = await fetch(`${API_BASE}/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

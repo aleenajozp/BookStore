@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE, getImageUrl } from '../config';
 
 const Admin = () => {
   const [view, setView] = useState('none');
@@ -14,21 +15,21 @@ const Admin = () => {
   });
 
   const fetchUsers = async () => {
-    const res = await fetch('http://localhost:3000/users');
+    const res = await fetch(`${API_BASE}/users`);
     const data = await res.json();
     setUsers(data);
     setView('users');
   };
 
   const fetchBooks = async () => {
-    const res = await fetch('http://localhost:3000/books');
+    const res = await fetch(`${API_BASE}/books`);
     const data = await res.json();
     setBooks(data);
     setView('books');
   };
 
   const fetchOrders = async () => {
-    const res = await fetch('http://localhost:3000/orders');
+    const res = await fetch(`${API_BASE}/orders`);
     const data = await res.json();
     setOrders(data);
     setView('orders');
@@ -58,8 +59,8 @@ const Admin = () => {
     formData.append('image', bookData.imageFile);
 
     const url = editingBook
-      ? `http://localhost:3000/books/${editingBook._id}`
-      : 'http://localhost:3000/books';
+      ? `${API_BASE}/books/${editingBook._id}`
+      : `${API_BASE}/books`;
 
     const method = editingBook ? 'PUT' : 'POST';
 
@@ -77,7 +78,7 @@ const Admin = () => {
 
   const handleDeleteBook = async (bookId) => {
     if (!window.confirm('Are you sure you want to delete this book?')) return;
-    const res = await fetch(`http://localhost:3000/books/${bookId}`, {
+    const res = await fetch(`${API_BASE}/books/${bookId}`, {
       method: 'DELETE',
     });
     const result = await res.json();
@@ -195,7 +196,7 @@ const Admin = () => {
                 margin: '10px',
                 width: '220px',
               }}>
-                <img src={book.image} alt={book.name} style={{
+                <img src={getImageUrl(book.image)} alt={book.name} style={{
                   width: '100%',
                   borderRadius: '5px',
                   marginBottom: '10px',
