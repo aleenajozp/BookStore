@@ -435,7 +435,7 @@ const publicDir = fs.existsSync(path.join(__dirname, 'public'))
 if (fs.existsSync(publicDir)) {
   console.log(`Serving static frontend from: ${publicDir}`);
   app.use(express.static(publicDir));
-  app.get('*', (req, res) => {
+  app.use((req, res) => {
     res.sendFile(path.join(publicDir, 'index.html'));
   });
 }
